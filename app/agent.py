@@ -67,6 +67,7 @@ def run_agent(company: str, icp: str, email: str):
 
     messages = [{"role": "system", "content": system_prompt}, {"role": "user", "content": "Begin the sequence."}]
     log = []
+    tool_results = {}
     
     for step in range(6):
         response = client.chat.completions.create(
@@ -97,14 +98,18 @@ def run_agent(company: str, icp: str, email: str):
                 try:
                     if func_name == "tool_signal_harvester":
                         res = tool_signal_harvester(args.get("company", company))
+                        tool_results["signals"] = res
                     elif func_name == "tool_research_analyst":
                         res = tool_research_analyst(str(args.get("signals", "")), args.get("icp", icp))
+                        tool_results["research"] = res
                     elif func_name == "tool_outreach_automated_sender":
                         res = tool_outreach_automated_sender(args.get("brief", ""), args.get("email", email))
+                        tool_results["email_result"] = res
                     else:
                         res = "Unknown tool"
                 except Exception as e:
                     res = f"Error: {e}"
+                    log.append(f"Error in {func_name}: {e}")
                 
                 messages.append({
                     "role": "tool",
@@ -119,5 +124,6 @@ def run_agent(company: str, icp: str, email: str):
     return {
         "status": "success",
         "log": log,
-        "final_response": msg.content
+        "final_response": msg.content,
+        "tool_results": tool_results
     }

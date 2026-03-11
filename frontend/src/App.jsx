@@ -55,11 +55,20 @@ function App() {
         });
 
         setTimeout(() => {
+           // Show email status
+           if (data.tool_results?.email_result) {
+             const emailRes = data.tool_results.email_result;
+             if (emailRes.status === 'sent') {
+               addLog(`✅ Email successfully sent!`, 'success');
+             } else {
+               addLog(`⚠️ Email status: ${emailRes.status} — ${emailRes.error_message || 'Check spam folder'}`, 'error');
+             }
+           }
            setFinalOutput(data.final_response);
            setLoading(false);
         }, data.log.length * 800 + 500);
       } else {
-        addLog(`Error: ${data.detail || 'Failed to execute agent'}`, 'error');
+        addLog(`Error: ${data.final_response || data.detail || 'Failed to execute agent'}`, 'error');
         setLoading(false);
       }
     } catch (err) {
