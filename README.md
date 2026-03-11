@@ -168,6 +168,16 @@ See [DOCS.md](DOCS.md) for:
 
 ---
 
+## 🎯 Submission Deliverables
+
+| Deliverable | Link |
+|---|---|
+| **GitHub Repository** | [github.com/Abhinav1Dhiman/firereach-agent](https://github.com/Abhinav1Dhiman/firereach-agent) |
+| **Live URL** | [firereach-agent-ra87.onrender.com](https://firereach-agent-ra87.onrender.com) |
+| **Agent Documentation** | [DOCS.md](DOCS.md) |
+
+---
+
 ## 👤 Author
 
 **Abhinav Dhiman**
