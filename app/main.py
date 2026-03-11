@@ -1,5 +1,7 @@
 import os
+import traceback
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 from app.schemas import OutreachRequest
@@ -7,14 +9,29 @@ from app.agent import run_agent
 
 app = FastAPI()
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 @app.post("/run-agent")
 def run(req: OutreachRequest):
-    result = run_agent(
-        req.company,
-        req.icp,
-        req.email
-    )
-    return result
+    try:
+        result = run_agent(
+            req.company,
+            req.icp,
+            req.email
+        )
+        return result
+    except Exception as e:
+        return {
+            "status": "error",
+            "log": [f"Agent error: {str(e)}"],
+            "final_response": f"An error occurred: {traceback.format_exc()}"
+        }
 
 # Serve the React frontend if the dist folder exists
 frontend_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), "frontend", "dist")
