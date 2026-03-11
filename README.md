@@ -148,6 +148,26 @@ See [DOCS.md](DOCS.md) for:
 
 ---
 
+## ⚠️ Known Issues
+
+### Email Not Sending in Deployed Environment
+- **Locally:** Email sending via Gmail SMTP works perfectly — emails are delivered instantly.
+- **On Render (Deployed):** The agent completes all 3 steps successfully, but emails may **not be received** by the target inbox.
+- **Root Cause:** Render's cloud servers use shared IP addresses that are often flagged by email providers (Gmail, Outlook, university servers). Gmail's SMTP server accepts the email, but the recipient's mail server may silently reject or quarantine it because:
+  - The sending IP has no SPF/DKIM/DMARC authentication
+  - University and corporate email servers block emails from untrusted cloud IPs
+  - Gmail itself may route the email to Spam/Junk
+- **Workaround:** 
+  - Try sending to a personal Gmail address and check the **Spam folder**
+  - For production use, integrate a dedicated email service like **SendGrid**, **Mailgun**, or **Resend** which have pre-authenticated sending IPs
+
+### Slow Execution on Free Tier
+- Render free instances spin down after 15 minutes of inactivity
+- First request after a cold start takes **~50-70 seconds** (server wake-up + 3 sequential Groq API calls)
+- Subsequent requests within the active window are **~15-20 seconds**
+
+---
+
 ## 👤 Author
 
 **Abhinav Dhiman**
